@@ -1,6 +1,8 @@
 <?php
 
-require_once dirname(__FILE__) . '/template-modules.php';
+require_once dirname(__FILE__) . '/includes/template-modules.php';
+require_once dirname(__FILE__) . '/includes/widgets.php';
+
 
 /**
  * Setup pdx theme.
@@ -53,55 +55,63 @@ add_filter( 'wp_page_menu_args', 'pdx_page_menu_args' );
 
 
 /**
- * Register widgetized areas, including two sidebars and four widget-ready columns in the footer.
- *
- * To override pdx_widgets_init() in a child theme, remove the action hook and add your own
- * function tied to the init hook.
- *
- * @since pdx 1.0
- * @uses register_sidebar
+ * Page title.
  */
-function pdx_widgets_init() {
-  // Area 1
-  register_sidebar( array (
-    'name' => 'Primary Widget Area',
-    'id' => 'primary-widget-area',
-    'description' => __( 'The primary widget area' , 'pdx' ),
-    'before_widget' => '<aside id="%1$s" class="widget-container %2$s">',
-    'after_widget' => "</aside>",
-    'before_title' => '<h3 class="widget-title">',
-    'after_title' => '</h3>',
-  ) );
-
-  // Area 2
-  register_sidebar( array (
-    'name' => 'Secondary Widget Area',
-    'id' => 'secondary-widget-area',
-    'description' => __( 'The secondary widget area' , 'pdx' ),
-    'before_widget' => '<aside id="%1$s" class="widget-container %2$s">',
-    'after_widget' => "</aside>",
-    'before_title' => '<h3 class="widget-title">',
-    'after_title' => '</h3>',
-  ) );
-
-  // Area 3
-  register_sidebar( array (
-    'name' => 'Footer Widget Area',
-    'id' => 'footer-widget-area',
-    'description' => __( 'The footer widget area' , 'pdx' ),
-    'before_widget' => '<aside id="%1$s" class="widget-container %2$s">',
-    'after_widget' => "</aside>",
-    'before_title' => '<h3 class="widget-title">',
-    'after_title' => '</h3>',
-  ) );
-}
-add_action( 'init', 'pdx_widgets_init' );
-
-
 function pdx_page_title() {
-  wp_title();
+  $sep = apply_filters('pdx_title_separator', '&#8212;');
+  $location = ( is_front_page() || is_home() ) ? '' : 'right';
+  $location = apply_filters('pdx_title_sep_location', $location);
+
+  echo wp_title($sep, false, $location);
 }
 
+function pdx_filter_page_title($title, $sep, $seplocation) {
+  global $paged, $page;
+
+  if ( is_category() ) {
+    $title .= sprintf( __('Category Archives %s ', 'pdx'), $sep);
+  } else if ( is_tag() ) {
+    $title .= sprintf( __('Tag Archives %s ', 'pdx'), $sep);
+  } else if ( is_archive() ) {
+    $title .= sprintf( __('Archives %s ', 'pdx'), $sep);
+  }
+
+  if ( is_front_page() && $title == '' ) {
+    $title = get_bloginfo('description');
+    if ( $seplocation == 'right' ) {
+      $title .= " $sep ";
+    } else {
+      $title = " $sep " . $title;
+    }
+  }
+
+  // add page number
+  if ( $paged >= 2 || $page >= 2 ) {
+    if ( $seplocation == 'right' ) {
+      $title .= sprintf( __('Page %s', 'pdx'), max($paged, $page) ) . " $sep ";
+    } else {
+      $title .= " $sep " . sprintf( __('Page %s', 'pdx'), max($paged, $page) );
+    }
+  }
+
+  // add blog name
+  if ( $seplocation == 'right') {
+    $title .= get_bloginfo('name');
+  } else {
+    $title = get_bloginfo('name') . $title;
+  }
+
+  return $title;
+}
+add_filter('wp_title', 'pdx_filter_page_title', 10, 3);
+
+function pdx_single_post_title($title, $post) {
+  if ( is_home() ) {
+    $title = get_bloginfo('description');
+  }
+  return $title;
+}
+add_filter('single_post_title', 'pdx_single_post_title', 10, 2);
 
 /**
  * Cleanup a few core WordPress things.
@@ -146,16 +156,40 @@ function pdx_foo( $args ) {
  * pdx javascript
  */
 function pdx_js() {
-  // load jQuery from Google's CDN and move to footer
-  wp_deregister_script('jquery');
-  wp_register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js', 
-    false, '1.4.2', true);
+  $offload_js = ( !defined('WP_DEBUG') || !WP_DEBUG );
+  $offload_js = apply_filters('pdx_offload_js', $offload_js);
 
-  wp_register_script('modernizr', get_template_directory_uri() . '/js/modernizr-1.5.js', false, 
-    '1.5', true);
+  if ( $offload_js ) {
+    wp_deregister_script('jquery');
+    wp_register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js', 
+      false, '1.4.2');
+    wp_register_script('modernizr', 'http://cachedcommons.org/cache/modernizr/1.5.0/javascripts/modernizr-min.js',
+      false, '1.5', true);
+  } else {
+    // do something ?
+  }
 
+  wp_enqueue_script('modernizr');
+}
+add_action('wp', 'pdx_js', 5);
+
+
+/**
+ * Add the default stylesheet.
+ */
+function pdx_add_style() {
   wp_enqueue_style('style', get_stylesheet_uri());
 }
-add_action('wp', 'pdx_js');
+add_action('wp_head', 'pdx_add_style', 5);
 
-
+/**
+ * Add 'no-js' class to html element if modernizr is present.
+ */
+function pdx_modernizr_no_js($attributes) {
+  $modernizr = apply_filters('include_modernizr', false);
+  if ( $modernizr || wp_script_is('modernizr', 'queue') ) {
+    $attributes .= ' class="no-js"';
+  }
+  return $attributes;
+}
+add_filter('language_attributes', 'pdx_modernizr_no_js');

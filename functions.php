@@ -129,6 +129,17 @@ function pdx_cleanup_wp() {
   global $wp_widget_factory;
   remove_action( 'wp_head', 
     array( $wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style' ) );
+
+  // remove rpc related links if not necessary
+  if ( !get_option('enable_xmlrpc') ) {
+    remove_action('wp_head', 'wlwmanifest_link');
+    remove_action('wp_head', 'rsd_link');
+  }
+
+  // remove adjacent links for pages
+  if ( is_page() ) {
+    remove_action('wp_head', 'adjacent_posts_rel_link_wp_head');
+  }
 }
 add_action('wp', 'pdx_cleanup_wp', 99);
 

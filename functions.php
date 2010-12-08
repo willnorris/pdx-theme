@@ -33,7 +33,7 @@ add_action('after_setup_theme', 'pdx_setup');
  * Remove wrapping <div> from around page menu.
  */
 function pdx_page_menu( $menu, $args ) {
-  $menu = preg_replace('|^<div[^>]+>(.+)</div>$|', '\\1', $menu);
+  $menu = preg_replace('|^<div.+?>(.+)</div>$|', '\\1', $menu);
   return $menu;
 }
 add_filter('wp_page_menu', 'pdx_page_menu', 10, 2);
@@ -64,6 +64,7 @@ function pdx_page_title() {
 
   echo wp_title($sep, false, $location);
 }
+
 
 function pdx_filter_page_title($title, $sep, $seplocation) {
   global $paged, $page;
@@ -105,6 +106,7 @@ function pdx_filter_page_title($title, $sep, $seplocation) {
 }
 add_filter('wp_title', 'pdx_filter_page_title', 10, 3);
 
+
 function pdx_single_post_title($title, $post) {
   if ( is_home() ) {
     $title = get_bloginfo('description');
@@ -112,6 +114,7 @@ function pdx_single_post_title($title, $post) {
   return $title;
 }
 add_filter('single_post_title', 'pdx_single_post_title', 10, 2);
+
 
 /**
  * Cleanup a few core WordPress things.
@@ -146,12 +149,6 @@ function pdx_comment_end( $comment, $args, $depth ) {
 }
 
 
-function pdx_foo( $args ) {
-  wn_die( $args );
-}
-//add_filter('wp_nav_menu_args', 'pdx_foo', 99);
-
-
 /**
  * pdx javascript
  */
@@ -182,6 +179,7 @@ function pdx_add_style() {
 }
 add_action('wp_head', 'pdx_add_style', 5);
 
+
 /**
  * Add 'no-js' class to html element if modernizr is present.
  */
@@ -193,3 +191,4 @@ function pdx_modernizr_no_js($attributes) {
   return $attributes;
 }
 add_filter('language_attributes', 'pdx_modernizr_no_js');
+

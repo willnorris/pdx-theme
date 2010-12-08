@@ -1,12 +1,12 @@
       <footer class="entry-utility">
-        <span class="cat-links"><span class="entry-utility-prep entry-utility-prep-cat-links"><?php //echo twentyten_cat_list(); ?></span></span>
-        <span class="meta-sep"> | </span>
-        <?php //$tags_text = twentyten_tag_list(); ?>
-        <?php if ( !empty($tags_text) ) : ?>
-        <span class="tag-links"><span class="entry-utility-prep entry-utility-prep-tag-links"><?php echo $tags_text; ?></span></span>
-        <span class="meta-sep"> | </span>
-        <?php endif; //$tags_text ?>
-        <?php if ( comments_open() ) : ?>
-        <span class="comments-link"><?php comments_popup_link( __( 'Leave a comment', 'pdx' ), __( '1 Comment', 'pdx' ), __( '% Comments', 'pdx' ) ); ?></span>
-        <?php endif; ?>
+        <?php
+          $tag_list = get_the_tag_list( '', ', ' );
+          if ( $tag_list ) {
+            $posted_in = __( 'This entry was posted in %1$s and tagged %2$s.' );
+          } else {
+            $posted_in = __( 'This entry was posted in %1$s.' );
+          }
+          printf( $posted_in . ' ', get_the_category_list( ', ' ), $tag_list );
+          printf( __( 'Bookmark the <a href="%1$s" title="Permalink to %2$s" rel="bookmark">permalink</a>.' ), get_permalink(), the_title_attribute( 'echo=0' ) );;
+        ?>
       </footer><!-- #entry-utility -->

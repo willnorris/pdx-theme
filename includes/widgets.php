@@ -15,8 +15,8 @@ function pdx_widgets_init() {
     'name' => 'Primary Widget Area',
     'id' => 'primary-widget-area',
     'description' => __( 'The primary widget area' , 'pdx' ),
-    'before_widget' => '<aside id="%1$s" class="widget-container %2$s">',
-    'after_widget' => "</aside>",
+    'before_widget' => '<section id="%1$s" class="widget-container %2$s">',
+    'after_widget' => "</section>",
     'before_title' => '<h3 class="widget-title">',
     'after_title' => '</h3>',
   ) );
@@ -26,8 +26,8 @@ function pdx_widgets_init() {
     'name' => 'Secondary Widget Area',
     'id' => 'secondary-widget-area',
     'description' => __( 'The secondary widget area' , 'pdx' ),
-    'before_widget' => '<aside id="%1$s" class="widget-container %2$s">',
-    'after_widget' => "</aside>",
+    'before_widget' => '<section id="%1$s" class="widget-container %2$s">',
+    'after_widget' => "</section>",
     'before_title' => '<h3 class="widget-title">',
     'after_title' => '</h3>',
   ) );
@@ -37,8 +37,8 @@ function pdx_widgets_init() {
     'name' => 'Footer Widget Area',
     'id' => 'footer-widget-area',
     'description' => __( 'The footer widget area' , 'pdx' ),
-    'before_widget' => '<aside id="%1$s" class="widget-container %2$s">',
-    'after_widget' => "</aside>",
+    'before_widget' => '<section id="%1$s" class="widget-container %2$s">',
+    'after_widget' => "</section>",
     'before_title' => '<h3 class="widget-title">',
     'after_title' => '</h3>',
   ) );

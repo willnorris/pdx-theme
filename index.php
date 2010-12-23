@@ -12,7 +12,7 @@
     </nav>
 
     <header id="header" role="banner">
-<?php get_template_module('header'); ?>
+      <?php get_template_module('header'); ?>
     </header>
 
     <nav id="nav" role="navigation">

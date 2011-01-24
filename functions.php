@@ -179,6 +179,22 @@ function pdx_archive_page_description() {
 }
 
 
+function pdx_comments_title() {
+  comments_number(
+    sprintf(__('No Responses to %s', 'pdx'), '<em>' . get_the_title() . '</em>'),
+    sprintf(__('One Response to %s', 'pdx'), '<em>' . get_the_title() . '</em>'),
+    sprintf(__('%% Responses to %s', 'pdx'), '<em>' . get_the_title() . '</em>')
+  );
+}
+
+
+function pdx_list_comments() {
+  wp_list_comments(
+    array( 'style' => 'div', 'callback' => 'pdx_comment_start', 'end-callback' => 'pdx_comment_end')
+  );
+}
+
+
 /**
  * Cleanup a few core WordPress things.
  */
@@ -207,6 +223,9 @@ function pdx_cleanup_wp() {
 add_action('wp', 'pdx_cleanup_wp', 99);
 
 
+/**
+ * Start 'comment' template module.
+ */
 function pdx_comment_start( $comment, $args, $depth ) {
   $GLOBALS['comment'] = $comment;
   $GLOBALS['comment_args'] = $args;
@@ -216,6 +235,9 @@ function pdx_comment_start( $comment, $args, $depth ) {
 }
 
 
+/**
+ * End 'comment' template module.
+ */
 function pdx_comment_end( $comment, $args, $depth ) {
 ?>
   </article>

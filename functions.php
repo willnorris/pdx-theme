@@ -189,10 +189,23 @@ add_action('wp', 'pdx_js', 5);
 
 
 /**
- * Add the default stylesheet.
+ * Add the default stylesheet. Try to use last modified time to stylesheet URI to ensure freshness.
+ *
+ * @see http://markjaquith.wordpress.com/2009/05/04/force-css-changes-to-go-live-immediately/
  */
 function pdx_add_style() {
-  wp_enqueue_style('style', get_stylesheet_uri());
+  $stylesheet = get_stylesheet_uri();
+  $version = false;
+
+  $stylesheet_dir_uri = get_stylesheet_directory_uri();
+  $stylesheet_dir = get_stylesheet_directory();
+
+  if ( strstr($stylesheet, $stylesheet_dir_uri) ) {
+    $file = preg_replace('|' . $stylesheet_dir_uri . '|', $stylesheet_dir, $stylesheet);
+    $version = filemtime( $file );
+  }
+
+  wp_enqueue_style('style', $stylesheet, array(), $version);
 }
 add_action('wp_head', 'pdx_add_style', 5);
 

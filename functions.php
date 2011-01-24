@@ -203,3 +203,12 @@ function pdx_modernizr_no_js($attributes) {
 }
 add_filter('language_attributes', 'pdx_modernizr_no_js');
 
+
+/**
+ * Handle 'safe_email' shortcode which converts email address into spambot-safe link.
+ */
+function pdx_safe_email($atts, $content=null) {
+    return '<a href="mailto:' . antispambot($content) . '">' . antispambot($content) . '</a>';
+}
+add_shortcode('safe_email', 'pdx_safe_email');
+

@@ -72,27 +72,38 @@ function update_template_hierarchy() {
 	if ( defined('WP_USE_THEMES') && WP_USE_THEMES ) :
 		$templates = array();
 
-		if ( is_404() ):
+		if ( is_404() ) {
+			// see get_404_template()
 			$templates[] = '404.php';
-		elseif ( is_search() ):
+    }
+
+		if ( is_search() ) {
+			// see get_search_template()
 			$templates[] = 'search.php';
-		elseif ( is_tax() ):
+    }
+
+		if ( is_tax() ) {
 			// see get_taxonomy_template()
-			$taxonomy = get_query_var('taxonomy');
-			$term = get_query_var('term');
+      $term = get_queried_object();
+      $taxonomy = $term->taxonomy;
 
-			if ( $taxonomy && $term )
-				$templates[] = "taxonomy-$taxonomy-$term.php";
-			if ( $taxonomy )
-				$templates[] = "taxonomy-$taxonomy.php";
-			$templates[] = "taxonomy.php";
+      $templates[] = "taxonomy-$taxonomy-{$term->slug}.php";
+      $templates[] = "taxonomy-$taxonomy.php";
+      $templates[] = "taxonomy.php";
+    }
 
-		elseif ( is_front_page() ):
+		if ( is_front_page() ) {
+			// see get_front_page_template()
 			$templates[] = 'front-page.php';
-		elseif ( is_home() ):
+    }
+
+		if ( is_home() ) {
+			// see get_home_template()
 			$templates[] = 'home.php';
 			$templates[] = 'index.php';
-		elseif ( is_attachment() ):
+    }
+
+		if ( is_attachment() ) {
 			// see get_attachment_template()
 			global $posts;
 			$type = explode('/', $posts[0]->post_mime_type);
@@ -100,26 +111,24 @@ function update_template_hierarchy() {
 			$templates[] = "{$type[1]}.php";
 			$templates[] = "{$type[0]}_{$type[1]}.php";
 			$templates[] = 'attachment.php';
+    }
 
-		elseif ( is_single() ):
+		if ( is_single() ) {
 			// see get_single_template()
-			global $wp_query;
-
 			$object = $wp_query->get_queried_object();
 			$templates[] = "single-{$object->post_type}.php";
 			$templates[] = 'single.php';
+    }
 
-		elseif ( is_page() ):
+		if ( is_page() ) {
 			// see get_page_template()
-			global $wp_query;
-
-			$id = (int) $wp_query->get_queried_object_id();
+			$id = get_queried_object_id();
 			$template = get_post_meta($id, '_wp_page_template', true);
 			$pagename = get_query_var('pagename');
 
 			if ( !$pagename && $id > 0 ) {
 				// If a static page is set as the front page, $pagename will not be set. Retrieve it from the queried object
-				$post = $wp_query->get_queried_object();
+				$post = get_queried_object();
 				$pagename = $post->post_name;
 			}
 
@@ -133,50 +142,58 @@ function update_template_hierarchy() {
 			if ( $id )
 				$templates[] = "page-$id.php";
 			$templates[] = "page.php";
+    }
 
-		elseif ( is_category() ):
+		if ( is_category() ) {
 			// see get_category_template()
-			$cat_ID = absint( get_query_var('cat') );
-			$category = get_category( $cat_ID );
+			$category = get_queried_object();
 
-			if ( !is_wp_error($category) )
-				$templates[] = "category-{$category->slug}.php";
-
-			$templates[] = "category-$cat_ID.php";
+			$templates[] = "category-{$category->slug}.php";
+			$templates[] = "category-{$category->term_id}.php";
 			$templates[] = "category.php";
+    }
 
-		elseif ( is_tag() ):
+		if ( is_tag() ) {
 			// see get_tag_template()
-			$tag_id = absint( get_query_var('tag_id') );
-			$tag_name = get_query_var('tag');
+			$tag = get_queried_object();
 
-			if ( $tag_name )
-				$templates[] = "tag-$tag_name.php";
-			if ( $tag_id )
-				$templates[] = "tag-$tag_id.php";
+			$templates[] = "tag-{$tag->slug}.php";
+			$templates[] = "tag-{$ctag->term_id}.php";
 			$templates[] = "tag.php";
+    }
 
-		elseif ( is_author() ):
+		if ( is_author() ) {
 			// see get_author_template()
-			$author_id = absint( get_query_var( 'author' ) );
-			$author = get_user_by( 'id', $author_id );
-			$author = $author->user_nicename;
+			$author = get_queried_object();
 
-			if ( $author )
-				$templates[] = "author-{$author}.php";
-			if ( $author_id )
-				$templates[] = "author-{$author_id}.php";
+			$templates[] = "author-{$author->user_nicename}.php";
+			$templates[] = "author-{$author->ID}.php";
 			$templates[] = 'author.php';
+    }
 
-		elseif ( is_date() ):
+		if ( is_date() ) {
+			// see get_date_template()
 			$templates[] = 'date.php';
-		elseif ( is_archive() ):
+    }
+
+		if ( is_archive() ) {
+			// see get_archive_template()
+			$post_type = get_query_var( 'post_type' );
+
+			if ( $post_type )
+				$templates[] = "archive-{$post_type}.php";
 			$templates[] = 'archive.php';
-		elseif ( is_comments_popup() ):
+    }
+
+		if ( is_comments_popup() ) {
+			// see get_comments_popup_template()
 			$templates[] = 'comments-popup.php';
-		elseif ( is_paged() ):
+    }
+
+		if ( is_paged() ) {
+			// see get_paged_template()
 			$templates[] = 'paged.php';
-		endif;
+    }
 
 		$wp_template_hierarchy = $templates;
 	endif;

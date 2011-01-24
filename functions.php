@@ -55,9 +55,9 @@ add_filter( 'wp_page_menu_args', 'pdx_page_menu_args' );
 
 
 /**
- * Page title.
+ * Build HTML page <title>.
  */
-function pdx_page_title() {
+function pdx_title() {
   $sep = apply_filters('pdx_title_separator', '&#8212;');
   $location = ( is_front_page() || is_home() ) ? '' : 'right';
   $location = apply_filters('pdx_title_sep_location', $location);
@@ -66,7 +66,10 @@ function pdx_page_title() {
 }
 
 
-function pdx_filter_page_title($title, $sep, $seplocation) {
+/**
+ * Customize wp_title based on the type of page.  Include page number if applicable as well as the blog name.
+ */
+function pdx_filter_title($title, $sep, $seplocation) {
   global $paged, $page;
 
   if ( is_category() ) {
@@ -104,9 +107,12 @@ function pdx_filter_page_title($title, $sep, $seplocation) {
 
   return $title;
 }
-add_filter('wp_title', 'pdx_filter_page_title', 10, 3);
+add_filter('wp_title', 'pdx_filter_title', 10, 3);
 
 
+/**
+ * Use blog description as title for home page.
+ */
 function pdx_single_post_title($title, $post) {
   if ( is_home() ) {
     $title = get_bloginfo('description');
@@ -164,7 +170,7 @@ function pdx_comment_end( $comment, $args, $depth ) {
  * pdx javascript
  */
 function pdx_js() {
-  $offload_js = ( !defined('WP_DEBUG') || !WP_DEBUG );
+  $offload_js = !WP_DEBUG;
   $offload_js = apply_filters('pdx_offload_js', $offload_js);
 
   if ( $offload_js ) {

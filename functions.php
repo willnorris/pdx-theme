@@ -11,15 +11,7 @@ function pdx_setup() {
   // Add default posts and comments RSS feed links to head
   add_theme_support( 'automatic-feed-links' );
 
-  // Make theme available for translation
-  // Translations can be filed in the /languages/ directory
-  load_theme_textdomain( 'pdx', TEMPLATEPATH . '/languages' );
-
-  $locale = get_locale();
-  $locale_file = TEMPLATEPATH . "/languages/$locale.php";
-  if ( is_readable( $locale_file ) ) {
-    require_once( $locale_file );
-  }
+  pdx_load_textdomain();
 
   // This theme uses wp_nav_menu() in one location.
   register_nav_menus( array(
@@ -27,6 +19,21 @@ function pdx_setup() {
   ) );
 }
 add_action('after_setup_theme', 'pdx_setup');
+
+
+/**
+ * Load the theme's translated strings from the /languages/ directory.  Also
+ * load /langages/{$locale}.php theme file.
+ */
+function pdx_load_textdomain() {
+  load_theme_textdomain( 'pdx', get_template_directory() . '/languages' );
+
+  $locale = get_locale();
+  $locale_file = get_template_directory() . "/languages/$locale.php";
+  if ( is_readable( $locale_file ) ) {
+    require_once( $locale_file );
+  }
+}
 
 
 /**

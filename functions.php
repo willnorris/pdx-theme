@@ -123,6 +123,63 @@ add_filter('single_post_title', 'pdx_single_post_title', 10, 2);
 
 
 /**
+ * Generate page title for archive pages.
+ */
+function pdx_archive_page_title() {
+  if ( have_posts() ) {
+    the_post();
+  }
+
+  if ( is_category() ) {
+    $template = __( 'Category Archives: %s', 'pdx' );
+    $value = single_cat_title( '', false);
+  } else if ( is_tag() ) {
+    $template = __( 'Tag Archives: %s', 'pdx' );
+    $value = single_tag_title( '', false);
+  } else if ( is_author() ) {
+    $template = __( 'Author Archives: %s', 'pdx' );
+    $value = get_the_author();
+  } else if ( is_day() ) {
+    $template = __( 'Daily Archives: %s', 'pdx' );
+    $value = get_the_date();
+  } else if ( is_month() ) {
+    $template = __( 'Monthly Archives: %s', 'pdx' );
+    $value = get_the_date('F Y');
+  } else if ( is_year() ) {
+    $template = __( 'Yearly Archives: %s', 'pdx' );
+    $value = get_the_date('Y');
+  } else {
+    $template = null;
+    $title = __( 'Blog Archives', 'pdx' );
+  }
+
+  if ( $template ) {
+    $title = sprintf( $template, '<span>' . $value . '</span>' );
+  }
+
+  rewind_posts();
+
+  return apply_filters('pdx_archive_page_title', $title);
+}
+
+
+/**
+ * Generate page description for archive pages.
+ */
+function pdx_archive_page_description() {
+  if ( is_category() || is_tag() || is_tax() ) {
+    $description = term_description();
+  } else if ( is_author() ) {
+    $description = get_the_author_meta( 'description' );
+  } else {
+    $description = '';
+  }
+
+  return apply_filters('pdx_archive_page_description', $description);
+}
+
+
+/**
  * Cleanup a few core WordPress things.
  */
 function pdx_cleanup_wp() {

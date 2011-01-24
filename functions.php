@@ -164,6 +164,15 @@ function pdx_archive_page_title() {
 
 
 /**
+ * Generate page title for search pages.
+ */
+function pdx_search_page_title() {
+  $title = sprintf( __( 'Search Results for: %s', 'pdx' ), '<span>' . get_search_query() . '</span>' );
+  return apply_filters('pdx_search_page_title', $title);
+}
+
+
+/**
  * Generate page description for archive pages.
  */
 function pdx_archive_page_description() {

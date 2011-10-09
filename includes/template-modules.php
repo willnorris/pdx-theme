@@ -115,7 +115,7 @@ function update_template_hierarchy() {
 
 		if ( is_single() ) {
 			// see get_single_template()
-			$object = $wp_query->get_queried_object();
+			$object = get_queried_object();
 			$templates[] = "single-{$object->post_type}.php";
 			$templates[] = 'single.php';
     }

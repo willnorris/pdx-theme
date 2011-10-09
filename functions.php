@@ -269,24 +269,29 @@ function pdx_js() {
   $offload_js = apply_filters('pdx_offload_js', $offload_js);
 
   if ( $offload_js ) {
-    wp_deregister_script('jquery');
-    wp_register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js', 
-      false, '1.4.2');
-    wp_register_script('modernizr', 'http://cachedcommons.org/cache/modernizr/1.5.0/javascripts/modernizr-min.js',
-      false, '1.5', true);
+    global $wp_scripts;
+    if ( wp_script_is('jquery', 'registered') ) {
+      $ver = $wp_scripts->query('jquery', 'registered')->ver;
+      wp_deregister_script('jquery');
+      wp_register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/' . $ver . '/jquery.min.js', 
+        false, $ver);
+    }
+    wp_register_script('modernizr', 'http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js',
+      false, '2.0.6', true);
   } else {
     // do something ?
   }
-
-  wp_enqueue_script('modernizr');
 }
 add_action('wp', 'pdx_js', 5);
 
 
 /**
  * Add the default stylesheet. Try to use last modified time to stylesheet URI to ensure freshness.
+ * We also enqueue the main stylesheet rather than load it directly in header.php to ensure it loads
+ * before scripts.
  *
  * @see http://markjaquith.wordpress.com/2009/05/04/force-css-changes-to-go-live-immediately/
+ * @see http://code.google.com/speed/page-speed/docs/rtt.html#PutStylesBeforeScripts
  */
 function pdx_add_style() {
   $stylesheet = get_stylesheet_uri();

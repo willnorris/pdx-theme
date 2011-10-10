@@ -273,10 +273,10 @@ function pdx_js() {
     if ( wp_script_is('jquery', 'registered') ) {
       $ver = $wp_scripts->query('jquery', 'registered')->ver;
       wp_deregister_script('jquery');
-      wp_register_script('jquery', '//ajax.googleapis.com/ajax/libs/jquery/' . $ver . '/jquery.min.js', 
+      wp_register_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/' . $ver . '/jquery.min.js', 
         false, $ver);
     }
-    wp_register_script('modernizr', '//cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js',
+    wp_register_script('modernizr', 'https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js',
       false, '2.0.6', true);
   } else {
     // do something ?

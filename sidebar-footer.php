@@ -1,5 +1,5 @@
-    <?php if ( is_active_sidebar('footer-widget-area') ) : ?>
-      <aside id="footer-widget-area">
-        <?php dynamic_sidebar( 'footer-widget-area' ); ?>
-      </aside><!-- #footer-widget-area -->
+    <?php if ( is_active_sidebar('pdx-footer-1') ) : ?>
+      <div id="footer-widget-area">
+        <?php dynamic_sidebar( 'pdx-footer-1' ); ?>
+      </div><!-- #footer-widget-area -->
     <?php endif; ?>

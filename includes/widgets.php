@@ -12,35 +12,35 @@
 function pdx_widgets_init() {
   // Area 1
   register_sidebar( array (
-    'name' => 'Primary Widget Area',
-    'id' => 'primary-widget-area',
-    'description' => __( 'The primary widget area' , 'pdx' ),
-    'before_widget' => '<section id="%1$s" class="widget-container %2$s">',
-    'after_widget' => "</section>",
+    'name' => __('Primary Sidebar', 'pdx'),
+    'id' => 'pdx-sidebar-1',
+    'description' => __( 'The main sidebar' , 'pdx' ),
+    'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+    'after_widget' => "</aside>",
     'before_title' => '<h3 class="widget-title">',
     'after_title' => '</h3>',
   ) );
 
   // Area 2
   register_sidebar( array (
-    'name' => 'Secondary Widget Area',
-    'id' => 'secondary-widget-area',
-    'description' => __( 'The secondary widget area' , 'pdx' ),
-    'before_widget' => '<section id="%1$s" class="widget-container %2$s">',
-    'after_widget' => "</section>",
+    'name' => __('Secondary Sidebar', 'pdx'),
+    'id' => 'pdx-sidebar-2',
+    'description' => __( 'The optional secondary sidebar' , 'pdx' ),
+    'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+    'after_widget' => "</aside>",
     'before_title' => '<h3 class="widget-title">',
     'after_title' => '</h3>',
   ) );
 
   // Area 3
   register_sidebar( array (
-    'name' => 'Footer Widget Area',
-    'id' => 'footer-widget-area',
-    'description' => __( 'The footer widget area' , 'pdx' ),
-    'before_widget' => '<section id="%1$s" class="widget-container %2$s">',
-    'after_widget' => "</section>",
+    'name' => __('Footer Widget Area', 'pdx'),
+    'id' => 'pdx-footer-1',
+    'description' => __( 'Optional footer area for widgets' , 'pdx' ),
+    'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+    'after_widget' => "</aside>",
     'before_title' => '<h3 class="widget-title">',
     'after_title' => '</h3>',
   ) );
 }
-add_action( 'init', 'pdx_widgets_init' );
+add_action( 'widgets_init', 'pdx_widgets_init' );

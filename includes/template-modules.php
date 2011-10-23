@@ -25,9 +25,10 @@ if ( !function_exists('get_template_module') ):
  * @uses locate_template() To search for template files.
  *
  * @param string $module The name of the module to be included.
+ * @param boolean $parent_only Only load modules from the parent template
  * @return string The file path to the loaded file. The empty string if no file was found.
  */
-function get_template_module( $module ) {
+function get_template_module( $module, $parent_only=false ) {
 	$template_hierarchy = get_template_hierarchy();
 	$template_names = array();
 	foreach( $template_hierarchy as $template_name ) {
@@ -37,7 +38,14 @@ function get_template_module( $module ) {
 	$template_names[] = $module . '/index.php';
 	$template_names[] = $module . '.php';
 
-	$located = locate_template($template_names, true, false);
+	$located = null;
+
+	if ( $parent_only ) {
+		$located = locate_parent_template($template_names, true, false);
+	} else {
+		$located = locate_template($template_names, true, false);
+	}
+
 	return $located;
 }
 endif;
@@ -200,3 +208,31 @@ function update_template_hierarchy() {
 }
 endif;
 
+
+if ( !function_exists('locate_parent_template') ):
+/**
+ * Retrieve the name of the highest priority template file that exists.  This function is identical to locate_template,
+ * except that it searches only in TEMPLATEPATH, so that only files in the parent theme will be found.
+ *
+ * @param string|array $template_names Template file(s) to search for, in order.
+ * @param bool $load If true the template file will be loaded if it is found.
+ * @param bool $require_once Whether to require_once or require. Default true. Has no effect if $load is false.
+ * @return string The template filename if one is located.
+ */
+function locate_parent_template($template_names, $load = false, $require_once = true ) {
+	$located = '';
+	foreach ( (array) $template_names as $template_name ) {
+		if ( !$template_name )
+			continue;
+		if ( file_exists(TEMPLATEPATH . '/' . $template_name) ) {
+			$located = TEMPLATEPATH . '/' . $template_name;
+			break;
+		}
+	}
+
+	if ( $load && '' != $located )
+		load_template( $located, $require_once );
+
+	return $located;
+}
+endif;

@@ -79,6 +79,10 @@ function pdx_title() {
 function pdx_filter_title($title, $sep, $seplocation) {
   global $paged, $page;
 
+  if ( is_feed() ) {
+    return $title;
+  }
+
   if ( is_category() ) {
     $title .= sprintf( __('Category Archives %s ', 'pdx'), $sep);
   } else if ( is_tag() ) {

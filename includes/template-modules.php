@@ -166,7 +166,7 @@ function update_template_hierarchy() {
 			$tag = get_queried_object();
 
 			$templates[] = "tag-{$tag->slug}.php";
-			$templates[] = "tag-{$ctag->term_id}.php";
+			$templates[] = "tag-{$tag->term_id}.php";
 			$templates[] = "tag.php";
     }
 

@@ -216,6 +216,17 @@ function pdx_list_comments() {
 
 
 /**
+ * Display notice that comments are the post are closed.
+ *
+ * @uses apply_filters Calls 'pdx_comments_closed' before returning the notice
+ */
+function pdx_comments_closed() {
+  echo apply_filters('pdx_comments_closed', 
+    '<p class="nocomments">' . __('Comments are closed', 'pdx') . '</p>');
+}
+
+
+/**
  * Cleanup a few core WordPress things.
  */
 function pdx_cleanup_wp() {

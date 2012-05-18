@@ -22,7 +22,7 @@
   <?php else : // no comments so far ?>
     <?php if ( comments_open() ) : // comments are open, but there are no comments ?>
     <?php else : // comments are closed ?>
-      <p class="nocomments"><?php _e('Comments are closed.', 'pdx'); ?></p>
+      <?php pdx_comments_closed(); ?>
     <?php endif; ?>
   <?php endif; ?>
 

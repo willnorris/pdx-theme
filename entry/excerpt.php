@@ -1,3 +1,3 @@
       <div class="entry-summary">
-        <?php the_excerpt( __( 'Continue reading <span class="meta-nav">&rarr;</span>', 'pdx' ) ); ?>
+        <?php the_excerpt(); ?>
       </div><!-- .entry-summary -->

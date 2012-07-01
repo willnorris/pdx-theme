@@ -343,9 +343,11 @@ add_filter('language_attributes', 'pdx_modernizr_no_js');
  */
 function pdx_safe_email($atts, $content=null) {
   $attr = '';
-  foreach($atts as $k => $v) {
-    if ($v) {
-      $attr .= ' ' . $k . '="' . esc_attr($v) .'"';
+  if ($atts) {
+    foreach($atts as $k => $v) {
+      if ($v) {
+        $attr .= ' ' . $k . '="' . esc_attr($v) .'"';
+      }
     }
   }
   return '<a' . $attr . ' href="mailto:' . antispambot($content) . '">' . antispambot($content) . '</a>';

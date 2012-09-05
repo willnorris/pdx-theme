@@ -277,7 +277,10 @@ function pdx_comment_end( $comment, $args, $depth ) {
 
 
 /**
- * pdx javascript
+ * PDX javascript.  If WP_DEBUG is not enabled, load jQuery from Google's CDN.  Also register modernizr to be loaded
+ * from cloudfare's CDN (but don't actually enqueue it yet).
+ *
+ * @uses apply_filters Calls 'pdx_offload_js' to determine if javascript should be loaded from external CDNs.
  */
 function pdx_js() {
   $offload_js = !WP_DEBUG;
@@ -289,10 +292,10 @@ function pdx_js() {
       $ver = $wp_scripts->query('jquery', 'registered')->ver;
       wp_deregister_script('jquery');
       wp_register_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/' . $ver . '/jquery.min.js', 
-        false, $ver);
+        false, null);
     }
     wp_register_script('modernizr', 'https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js',
-      false, '2.0.6', true);
+      false, null, true);
   } else {
     // do something ?
   }

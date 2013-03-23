@@ -223,14 +223,9 @@ function pdx_comments_closed() {
  * Cleanup a few core WordPress things.
  */
 function pdx_cleanup_wp() {
-  // remove 'capital_P_dangit'
-  foreach ( array( 'the_content', 'the_title', 'comment_text' ) as $filter ) {
-    remove_filter( $filter, 'capital_P_dangit', 11 );
-  }
-
   // remove the default styles that are packaged with the Recent Comments widget.
   global $wp_widget_factory;
-  remove_action( 'wp_head', 
+  remove_action( 'wp_head',
     array( $wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style' ) );
 
   // remove adjacent links for pages
@@ -326,21 +321,4 @@ function pdx_modernizr_no_js($attributes) {
   return $attributes;
 }
 add_filter('language_attributes', 'pdx_modernizr_no_js');
-
-
-/**
- * Handle 'safe_email' shortcode which converts email address into spambot-safe link.
- */
-function pdx_safe_email($atts, $content=null) {
-  $attr = '';
-  if ($atts) {
-    foreach($atts as $k => $v) {
-      if ($v) {
-        $attr .= ' ' . $k . '="' . esc_attr($v) .'"';
-      }
-    }
-  }
-  return '<a' . $attr . ' href="mailto:' . antispambot($content) . '">' . antispambot($content) . '</a>';
-}
-add_shortcode('safe_email', 'pdx_safe_email');
 

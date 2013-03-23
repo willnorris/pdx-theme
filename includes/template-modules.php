@@ -29,24 +29,24 @@ if ( !function_exists('get_template_module') ):
  * @return string The file path to the loaded file. The empty string if no file was found.
  */
 function get_template_module( $module, $parent_only=false ) {
-	$template_hierarchy = get_template_hierarchy();
-	$template_names = array();
-	foreach( $template_hierarchy as $template_name ) {
-		$template_names[] = $module . '/' . $template_name;
-	}
-	// fall backs
-	$template_names[] = $module . '/index.php';
-	$template_names[] = $module . '.php';
+  $template_hierarchy = get_template_hierarchy();
+  $template_names = array();
+  foreach( $template_hierarchy as $template_name ) {
+    $template_names[] = $module . '/' . $template_name;
+  }
+  // fall backs
+  $template_names[] = $module . '/index.php';
+  $template_names[] = $module . '.php';
 
-	$located = null;
+  $located = null;
 
-	if ( $parent_only ) {
-		$located = locate_parent_template($template_names, true, false);
-	} else {
-		$located = locate_template($template_names, true, false);
-	}
+  if ( $parent_only ) {
+    $located = locate_parent_template($template_names, true, false);
+  } else {
+    $located = locate_template($template_names, true, false);
+  }
 
-	return $located;
+  return $located;
 }
 endif;
 
@@ -56,15 +56,15 @@ if ( !function_exists('get_template_hierarchy') ):
  * Returns the template hierarchy for the current page.
  *
  * @return array
- */	
+ */
 function get_template_hierarchy() {
-	global $wp_template_hierarchy;
+  global $wp_template_hierarchy;
 
-	if ( !isset($wp_template_hierarchy) ) {
-		update_template_hierarchy();
-	}
+  if ( !isset($wp_template_hierarchy) ) {
+    update_template_hierarchy();
+  }
 
-	return $wp_template_hierarchy;
+  return $wp_template_hierarchy;
 }
 endif;
 
@@ -75,23 +75,23 @@ if ( !function_exists('update_template_hierarchy') ):
  * Calling update_template_hierarchy() will recalculate the template hierarchy for $wp_query.
  */
 function update_template_hierarchy() {
-	global $wp_template_hierarchy;
-	
-	if ( defined('WP_USE_THEMES') && WP_USE_THEMES ) :
-		$templates = array();
+  global $wp_template_hierarchy;
 
-		if ( is_404() ) {
-			// see get_404_template()
-			$templates[] = '404.php';
+  if ( defined('WP_USE_THEMES') && WP_USE_THEMES ) :
+    $templates = array();
+
+    if ( is_404() ) {
+      // see get_404_template()
+      $templates[] = '404.php';
     }
 
-		if ( is_search() ) {
-			// see get_search_template()
-			$templates[] = 'search.php';
+    if ( is_search() ) {
+      // see get_search_template()
+      $templates[] = 'search.php';
     }
 
-		if ( is_tax() ) {
-			// see get_taxonomy_template()
+    if ( is_tax() ) {
+      // see get_taxonomy_template()
       $term = get_queried_object();
       $taxonomy = $term->taxonomy;
 
@@ -100,111 +100,111 @@ function update_template_hierarchy() {
       $templates[] = "taxonomy.php";
     }
 
-		if ( is_front_page() ) {
-			// see get_front_page_template()
-			$templates[] = 'front-page.php';
+    if ( is_front_page() ) {
+      // see get_front_page_template()
+      $templates[] = 'front-page.php';
     }
 
-		if ( is_home() ) {
-			// see get_home_template()
-			$templates[] = 'home.php';
-			$templates[] = 'index.php';
+    if ( is_home() ) {
+      // see get_home_template()
+      $templates[] = 'home.php';
+      $templates[] = 'index.php';
     }
 
-		if ( is_attachment() ) {
-			// see get_attachment_template()
-			global $posts;
-			$type = explode('/', $posts[0]->post_mime_type);
-			$templates[] = "{$type[0]}.php";
-			$templates[] = "{$type[1]}.php";
-			$templates[] = "{$type[0]}_{$type[1]}.php";
-			$templates[] = 'attachment.php';
+    if ( is_attachment() ) {
+      // see get_attachment_template()
+      global $posts;
+      $type = explode('/', $posts[0]->post_mime_type);
+      $templates[] = "{$type[0]}.php";
+      $templates[] = "{$type[1]}.php";
+      $templates[] = "{$type[0]}_{$type[1]}.php";
+      $templates[] = 'attachment.php';
     }
 
-		if ( is_single() ) {
-			// see get_single_template()
-			$object = get_queried_object();
-			$templates[] = "single-{$object->post_type}.php";
-			$templates[] = 'single.php';
+    if ( is_single() ) {
+      // see get_single_template()
+      $object = get_queried_object();
+      $templates[] = "single-{$object->post_type}.php";
+      $templates[] = 'single.php';
     }
 
-		if ( is_page() ) {
-			// see get_page_template()
-			$id = get_queried_object_id();
-			$template = get_post_meta($id, '_wp_page_template', true);
-			$pagename = get_query_var('pagename');
+    if ( is_page() ) {
+      // see get_page_template()
+      $id = get_queried_object_id();
+      $template = get_post_meta($id, '_wp_page_template', true);
+      $pagename = get_query_var('pagename');
 
-			if ( !$pagename && $id > 0 ) {
-				// If a static page is set as the front page, $pagename will not be set. Retrieve it from the queried object
-				$post = get_queried_object();
-				$pagename = $post->post_name;
-			}
+      if ( !$pagename && $id > 0 ) {
+        // If a static page is set as the front page, $pagename will not be set. Retrieve it from the queried object
+        $post = get_queried_object();
+        $pagename = $post->post_name;
+      }
 
-			if ( 'default' == $template )
-				$template = '';
+      if ( 'default' == $template )
+        $template = '';
 
-			if ( !empty($template) && !validate_file($template) )
-				$templates[] = $template;
-			if ( $pagename )
-				$templates[] = "page-$pagename.php";
-			if ( $id )
-				$templates[] = "page-$id.php";
-			$templates[] = "page.php";
+      if ( !empty($template) && !validate_file($template) )
+        $templates[] = $template;
+      if ( $pagename )
+        $templates[] = "page-$pagename.php";
+      if ( $id )
+        $templates[] = "page-$id.php";
+      $templates[] = "page.php";
     }
 
-		if ( is_category() ) {
-			// see get_category_template()
-			$category = get_queried_object();
+    if ( is_category() ) {
+      // see get_category_template()
+      $category = get_queried_object();
 
-			$templates[] = "category-{$category->slug}.php";
-			$templates[] = "category-{$category->term_id}.php";
-			$templates[] = "category.php";
+      $templates[] = "category-{$category->slug}.php";
+      $templates[] = "category-{$category->term_id}.php";
+      $templates[] = "category.php";
     }
 
-		if ( is_tag() ) {
-			// see get_tag_template()
-			$tag = get_queried_object();
+    if ( is_tag() ) {
+      // see get_tag_template()
+      $tag = get_queried_object();
 
-			$templates[] = "tag-{$tag->slug}.php";
-			$templates[] = "tag-{$tag->term_id}.php";
-			$templates[] = "tag.php";
+      $templates[] = "tag-{$tag->slug}.php";
+      $templates[] = "tag-{$tag->term_id}.php";
+      $templates[] = "tag.php";
     }
 
-		if ( is_author() ) {
-			// see get_author_template()
-			$author = get_queried_object();
+    if ( is_author() ) {
+      // see get_author_template()
+      $author = get_queried_object();
 
-			$templates[] = "author-{$author->user_nicename}.php";
-			$templates[] = "author-{$author->ID}.php";
-			$templates[] = 'author.php';
+      $templates[] = "author-{$author->user_nicename}.php";
+      $templates[] = "author-{$author->ID}.php";
+      $templates[] = 'author.php';
     }
 
-		if ( is_date() ) {
-			// see get_date_template()
-			$templates[] = 'date.php';
+    if ( is_date() ) {
+      // see get_date_template()
+      $templates[] = 'date.php';
     }
 
-		if ( is_archive() ) {
-			// see get_archive_template()
-			$post_type = get_query_var( 'post_type' );
+    if ( is_archive() ) {
+      // see get_archive_template()
+      $post_type = get_query_var( 'post_type' );
 
-			if ( $post_type )
-				$templates[] = "archive-{$post_type}.php";
-			$templates[] = 'archive.php';
+      if ( $post_type )
+        $templates[] = "archive-{$post_type}.php";
+      $templates[] = 'archive.php';
     }
 
-		if ( is_comments_popup() ) {
-			// see get_comments_popup_template()
-			$templates[] = 'comments-popup.php';
+    if ( is_comments_popup() ) {
+      // see get_comments_popup_template()
+      $templates[] = 'comments-popup.php';
     }
 
-		if ( is_paged() ) {
-			// see get_paged_template()
-			$templates[] = 'paged.php';
+    if ( is_paged() ) {
+      // see get_paged_template()
+      $templates[] = 'paged.php';
     }
 
-		$wp_template_hierarchy = $templates;
-	endif;
+    $wp_template_hierarchy = $templates;
+  endif;
 }
 endif;
 
@@ -220,19 +220,19 @@ if ( !function_exists('locate_parent_template') ):
  * @return string The template filename if one is located.
  */
 function locate_parent_template($template_names, $load = false, $require_once = true ) {
-	$located = '';
-	foreach ( (array) $template_names as $template_name ) {
-		if ( !$template_name )
-			continue;
-		if ( file_exists(TEMPLATEPATH . '/' . $template_name) ) {
-			$located = TEMPLATEPATH . '/' . $template_name;
-			break;
-		}
-	}
+  $located = '';
+  foreach ( (array) $template_names as $template_name ) {
+    if ( !$template_name )
+      continue;
+    if ( file_exists(TEMPLATEPATH . '/' . $template_name) ) {
+      $located = TEMPLATEPATH . '/' . $template_name;
+      break;
+    }
+  }
 
-	if ( $load && '' != $located )
-		load_template( $located, $require_once );
+  if ( $load && '' != $located )
+    load_template( $located, $require_once );
 
-	return $located;
+  return $located;
 }
 endif;

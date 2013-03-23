@@ -208,13 +208,6 @@ function pdx_comments_title() {
 }
 
 
-function pdx_list_comments() {
-  wp_list_comments(
-    array( 'style' => 'div', 'callback' => 'pdx_comment_start', 'end-callback' => 'pdx_comment_end')
-  );
-}
-
-
 /**
  * Display notice that comments are the post are closed.
  *
@@ -251,22 +244,20 @@ add_action('wp', 'pdx_cleanup_wp', 99);
 /**
  * Start 'comment' template module.
  */
-function pdx_comment_start( $comment, $args, $depth ) {
+function pdx_comment( $comment, $args, $depth ) {
   $GLOBALS['comment'] = $comment;
   $GLOBALS['comment_args'] = $args;
   $GLOBALS['comment_depth'] = $depth;
 
-  get_template_module('comment');
-}
-
-
-/**
- * End 'comment' template module.
- */
-function pdx_comment_end( $comment, $args, $depth ) {
-?>
-  </article>
-<?php
+  switch ( $comment->comment_type ) {
+    case '':
+      get_template_module( 'comment' );
+      break;
+    case 'pingback':
+    case 'trackback':
+      get_template_module( 'pingback' );
+      break;
+  }
 }
 
 

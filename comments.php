@@ -1,22 +1,22 @@
-    <aside id="comments">
-<?php if ( post_password_required() ): ?>
-      <div class="nopassword"><?php _e( 'This post is password protected. Enter the password to view any comments.', 'pdx' ); ?></div>
-<?php else: ?>
+<?php if ( !post_password_required() ): ?>
+    <aside id="comments" class="comments-area">
   <?php if ( have_comments() ) : ?>
         <h3 id="comments-title"><?php pdx_comments_title(); ?></h3>
-        <?php if ( get_comment_pages_count() > 1 ) : ?>
-            <nav id="comment-nav-above" class="navigation">
-              <div class="nav-previous"><?php previous_comments_link( __('&larr; Older Comments', 'pdx') ); ?></div>
-              <div class="nav-next"><?php next_comments_link( __('Newer Comments &rarr;', 'pdx') ); ?></div>
+        <?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) : ?>
+            <nav id="comment-nav-above" class="navigation-comment" role="navigation">
+              <div class="previous"><?php previous_comments_link( __('&larr; Older Comments', 'pdx') ); ?></div>
+              <div class="next"><?php next_comments_link( __('Newer Comments &rarr;', 'pdx') ); ?></div>
             </nav>
         <?php endif; ?>
 
-        <?php pdx_list_comments(); ?>
+        <ol class="comment-list">
+<?php wp_list_comments( array( 'callback' => 'pdx_comment')); ?>
+        </ol>
 
-        <?php if ( get_comment_pages_count() > 1 ) : ?>
-            <nav id="comment-nav-above" class="navigation">
-              <div class="nav-previous"><?php previous_comments_link( __('&larr; Older Comments', 'pdx') ); ?></div>
-              <div class="nav-next"><?php next_comments_link( __('Newer Comments &rarr;', 'pdx') ); ?></div>
+        <?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) : ?>
+            <nav id="comment-nav-above" class="navigation-comment" role="navigation">
+              <div class="previous"><?php previous_comments_link( __('&larr; Older Comments', 'pdx') ); ?></div>
+              <div class="next"><?php next_comments_link( __('Newer Comments &rarr;', 'pdx') ); ?></div>
             </nav>
         <?php endif; ?>
   <?php else : // no comments so far ?>
@@ -27,5 +27,5 @@
   <?php endif; ?>
 
   <?php comment_form(); ?>
-<?php endif; ?>
     </aside><!-- #comments -->
+<?php endif; ?>

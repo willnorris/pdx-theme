@@ -1,6 +1,6 @@
 <?php while ( have_posts() ) : the_post(); ?>
     <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-      <header>
+      <header class="entry-header">
         <?php get_template_module('entry/title'); ?>
         <?php get_template_module('entry/meta'); ?>
       </header>

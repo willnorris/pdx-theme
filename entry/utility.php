@@ -1,4 +1,4 @@
-      <footer class="entry-utility">
+      <footer class="entry-meta">
         <?php
           $tag_list = get_the_tag_list( '', ', ' );
           if ( $tag_list ) {

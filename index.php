@@ -2,33 +2,28 @@
 <html <?php language_attributes(); ?>>
 <?php get_header(); ?>
 <body <?php body_class(); ?>>
-  <div id="wrapper">
-    <nav class="skip-links assistive-text">
-      <ul>
-        <li><a href="#nav"><?php _e('Skip to primary navigation'); ?></a></li>
-        <li><a href="#content"><?php _e('Skip to main content'); ?></a></li>
-      </ul>
-    </nav>
+  <div id="page" class="hfeed site">
+    <?php do_action( 'before' ); ?>
 
-    <header id="header" role="banner">
-      <?php get_template_module('header/title'); ?>
-      <?php get_template_module('header/nav'); ?>
+    <header id="masthead" class="site-header" role="banner">
+<?php get_template_module('header/title'); ?>
+<?php get_template_module('header/nav'); ?>
     </header>
 
-    <div id="main" role="main">
-      <div id="container">
-        <div id="content">
-          <?php get_template_module('content'); ?>
+    <div id="main" class="site-main">
+      <div id="primary" class="content-area">
+        <div id="content" class="site-content" role="main">
+<?php get_template_module('content'); ?>
         </div><!-- #content -->
-      </div><!-- #container -->
+      </div><!-- #primary -->
       <?php get_sidebar(); ?>
     </div>
 
-    <footer id="footer">
+    <footer id="footer" class="site-footer" role="contentinfo">
       <?php get_template_module('footer'); ?>
     </footer>
-
-  <?php wp_footer(); ?>
   </div>
+
+<?php wp_footer(); ?>
 </body>
 </html>

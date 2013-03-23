@@ -277,9 +277,11 @@ function pdx_comment_end( $comment, $args, $depth ) {
  * @uses apply_filters Calls 'pdx_offload_js' to determine if javascript should be loaded from external CDNs.
  */
 function pdx_js() {
-  $offload_js = !WP_DEBUG;
-  $offload_js = apply_filters('pdx_offload_js', $offload_js);
+  if ( is_singular() && comments_open() && get_option('thread_comments') ) {
+    wp_enqueue_script( 'comment-reply' );
+  }
 
+  $offload_js = apply_filters('pdx_offload_js', !WP_DEBUG);
   if ( $offload_js ) {
     global $wp_scripts;
     if ( wp_script_is('jquery', 'registered') ) {

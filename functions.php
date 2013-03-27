@@ -178,7 +178,8 @@ function pdx_archive_page_title() {
  * Generate page title for search pages.
  */
 function pdx_search_page_title() {
-  $title = sprintf( __( 'Search Results for: %s', 'pdx' ), '<span>' . get_search_query() . '</span>' );
+  $title = sprintf( __( 'Search Results for: %s', 'pdx' ),
+      '<span>' . get_search_query() . '</span>' );
   return apply_filters('pdx_search_page_title', $title);
 }
 
@@ -214,7 +215,7 @@ function pdx_comments_title() {
  * @uses apply_filters Calls 'pdx_comments_closed' before returning the notice
  */
 function pdx_comments_closed() {
-  echo apply_filters('pdx_comments_closed', 
+  echo apply_filters('pdx_comments_closed',
     '<p class="nocomments">' . __('Comments are closed', 'pdx') . '</p>');
 }
 
@@ -257,10 +258,11 @@ function pdx_comment( $comment, $args, $depth ) {
 
 
 /**
- * PDX javascript.  If WP_DEBUG is not enabled, load jQuery from Google's CDN.  Also register modernizr to be loaded
- * from cloudfare's CDN (but don't actually enqueue it yet).
+ * PDX javascript.  If WP_DEBUG is not enabled, load jQuery from Google's CDN.  Also register
+ * modernizr to be loaded * from cloudfare's CDN (but don't actually enqueue it yet).
  *
- * @uses apply_filters Calls 'pdx_offload_js' to determine if javascript should be loaded from external CDNs.
+ * @uses apply_filters Calls 'pdx_offload_js' to determine if javascript should be loaded from
+ *     external CDNs.
  */
 function pdx_js() {
   if ( is_singular() && comments_open() && get_option('thread_comments') ) {
@@ -270,13 +272,15 @@ function pdx_js() {
   $offload_js = apply_filters('pdx_offload_js', !WP_DEBUG);
   if ( $offload_js ) {
     global $wp_scripts;
-    if ( wp_script_is('jquery', 'registered') ) {
-      $ver = $wp_scripts->query('jquery', 'registered')->ver;
-      wp_deregister_script('jquery');
-      wp_register_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/' . $ver . '/jquery.min.js', 
+    if ( wp_script_is('jquery-core', 'registered') ) {
+      $script = $wp_scripts->query('jquery-core');
+      wp_deregister_script('jquery-core');
+      wp_register_script('jquery-core',
+        '//ajax.googleapis.com/ajax/libs/jquery/' . $script->ver . '/jquery.min.js',
         false, null);
     }
-    wp_register_script('modernizr', 'https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js',
+    wp_register_script('modernizr',
+      '//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js',
       false, null, true);
   } else {
     // do something ?
